@@ -16,13 +16,31 @@ const vuexLocalStorage = new VuexPersist({
 const store = new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
+    activeVehicle: null,
+    editVehicle: null,
+    vehiclesLoading: false,
+    vehicles: {"vehicles":[]},
     error: null,
     loading: false,
     user: null,
     profile: null,
-    token: null
+    token: null,
+    tmp: null
   },
   mutations: {
+    setActiveVehicle (state, payload) {
+      state.activeVehicle = payload
+    },
+    setEditVehicle (state, payload) {
+      console.log("running setEditVehicle")
+      state.editVehicle = payload
+    },
+    setVehiclesLoading(state, payload) {
+      state.vehiclesLoading = payload
+    },
+    setVehicles(state, payload) {
+      state.vehicles = payload
+    },
     setError (state, payload) {
       state.error = payload
     },
@@ -37,6 +55,9 @@ const store = new Vuex.Store({
     },
     setUser (state, payload) {
       state.user = payload
+    },
+    setTmp (state, payload) {
+      state.tmp = payload
     }
   },
   actions: {
@@ -98,6 +119,81 @@ const store = new Vuex.Store({
       commit('setProfile', null)
       commit('setToken', null)
       router.push('/')
+    },
+    getVehicles ({ commit }) {
+      function doGet (vm, count, objectLength) {
+        console.log("running getVehicles")
+        var auth = {
+          headers: { 'Content-Type': 'application/json', 'Authorization': store.state.token }
+        }
+
+        axios.get(process.env.VUE_APP_AUTO_API_SERVER + 'vehicles', auth)
+          .then(response => {
+            console.log(response)
+            if (response.data.status === "expired") {
+              if (count < 3) {
+                count++
+                store.dispatch('refreshToken')
+                setTimeout(doGet(count), 1000)
+              }
+              else {
+                if ('vehicles' in  response.data) {
+                  commit('setVehicles', response.data)
+                  commit('setVehiclesLoading', false)
+
+                  objectLength = Object.keys(response.data.vehicles).length
+                  if (objectLength === 0) {
+                    router.push('inventory');
+                  }
+                }
+              }
+            }
+            else {
+              if ('vehicles' in  response.data) {
+                commit('setVehicles', response.data)
+                commit('setVehiclesLoading', false)
+
+                objectLength = Object.keys(response.data.vehicles).length
+                if (objectLength === 0) {
+                  router.push('inventory');
+                }
+              }
+            }
+          })
+      }
+
+      commit('setVehiclesLoading', true)
+      var count = 0
+      var objectLength = 0
+      doGet(this, count, objectLength)
+    },
+    postVehicles ({ commit }, data) {
+      var auth = {
+        headers: { 'Content-Type': 'application/json', 'Authorization': store.state.token }
+      }
+      console.log(data)
+      axios.post(process.env.VUE_APP_AUTO_API_SERVER + 'vehicles', data, auth)
+        .then(response => {
+          commit('setVehicles', response.data)
+        })
+        .catch(function () {
+          console.log("there was an error")
+        })
+    },
+    editVehicles ({ commit }, data) {
+      var auth = {
+        headers: { 'Content-Type': 'application/json', 'Authorization': store.state.token }
+      }
+      console.log(data)
+      axios.post(process.env.VUE_APP_AUTO_API_SERVER + 'vehicles/' + data.vid, data, auth)
+        .then(response => {
+          console.log(response)
+          commit('setTmp', null)
+          this.dispatch('getVehicles')
+        })
+        .catch(function () {
+          console.log("there was an error")
+        })
     }
   },
   getters: {
@@ -135,12 +231,44 @@ const store = new Vuex.Store({
         var userId = state.profile.uid
         var items = [
           { title: "My Profile", to: "/profile/" + userId},
-          { title: "My Inventory", to: "/inventory"},
+          { title: "My Vehicles", to: "/inventory"},
           { title: "Sign Out", to: "/signout"}
         ]
         return items
       }
+    },
+    getVehicleToEdit: state => {
+        var data = state.editVehicle
 
+        if (!("type" in data)) {
+          data.type = 0
+        }
+
+        if (data.type == "car") {
+          data.type = 0
+        } else if (data.type == "truck") {
+          data.type = 1
+        } else if (data.type == "motorcycle") {
+          data.type = 2
+        } else if (data.type == "other") {
+          data.type = 3
+        }
+
+        if (!("units" in data)) {
+          data.units = 0
+        }
+
+        if (data.units == "mi") {
+          data.units = 0
+        } else if (data.units == "km") {
+          data.units = 1
+        }
+
+        return data
+    },
+    vehiclesLength: state => {
+      var objectLength = Object.keys(state.vehicles.vehicles).length
+      return objectLength
     }
   }
 })

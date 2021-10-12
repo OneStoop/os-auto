@@ -1,6 +1,9 @@
 <template>
   <v-container fluid>
+Fueling
+    <v-card>
 
+    </v-card>
 
   </v-container>
 </template>
@@ -24,8 +27,8 @@ export default {
     }
   },
   mounted () {
-    document.title = "Auto - One Stoop"
     let vm = this
+    this.$store.dispatch('getVehicles')
     this.autoRefreshToken()
     setTimeout(function () { vm.$store.dispatch('refreshToken') }, 3300000)
   },

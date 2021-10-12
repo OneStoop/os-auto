@@ -1,46 +1,53 @@
 <template>
   <v-container fluid>
 
-    <v-row>
-      <v-col cols="4"></v-col>
-      <v-col cols="" class="">
-        <p class="">Sign in with</p>
-      </v-col>
-    </v-row>
+    <v-card
+      class="mx-auto"
+      color="primary"
+      max-width="400"
+      elevation="2"
+      outlined
+      shaped
+      dark
+    >
+      <v-card-title
+        class="white--text mt-8 justify-center"
+      >
+        Sign in with
+      </v-card-title>
 
-    <v-row>
-      <v-col cols="4"></v-col>
-      <v-col cols="4" class="text-center">
-        <v-btn @click="googleSignUP()" icon class="ml-20">
-          <v-img src="https://storage.googleapis.com/onestoopimages01/btn_google_signin_light_normal_web.png"></v-img>
-        </v-btn>
-      </v-col>
-    </v-row>
+      <v-card-text>
+        <v-row>
+          <v-col cols="4"></v-col>
+          <v-col cols="4" class="text-center">
+            <v-btn
+              @click="googleSignUP()"
+              icon
+            >
+              <v-img
+                src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
+              ></v-img>
+            </v-btn>
+          </v-col>
+        </v-row>
 
-    <v-row>
-      <v-col cols="4"></v-col>
-      <v-col cols="" class="">
-        <p class="">Sign in Email</p>
-      </v-col>
-    </v-row>
+        <v-row>
+          <v-col cols="12" class="text-center">
+            Or
+            <v-divider></v-divider>
+          </v-col>
+        </v-row>
 
-    <v-row>
-      <v-col cols="4"></v-col>
-      <v-col cols="4">
-        <form @submit.prevent="userSignIn">
-
-            <v-col>
-              <v-alert type="error" dismissible v-model="alert">
-                {{ error }}
-              </v-alert>
-            </v-col>
-
+        <v-row>
+          <v-col cols="12">
+            <form @submit.prevent="userSignIn">
               <v-text-field
                 name="email"
                 label="Email"
                 id="email"
                 type="email"
                 v-model="email"
+                outlined
                 required></v-text-field>
 
               <v-text-field
@@ -49,10 +56,19 @@
                 id="password"
                 type="password"
                 v-model="password"
+                outlined
                 required></v-text-field>
 
-              <v-btn color="primary" type="submit">Sign In</v-btn>
-        </form>
+              <v-btn
+                color="white"
+                class="black--text"
+                large
+                type="submit"
+
+              >
+                Sign In
+              </v-btn>
+          </form>
       </v-col>
     </v-row>
 
@@ -61,10 +77,18 @@
         <p>
           Don't have an account?<br>Join One Stoop where you can save and share your favorite recipes.
           <p>
-          <v-btn :to="'/signup/'">Sign Up</v-btn>
+          <v-btn
+            :to="'/signup/'"
+            color="white"
+            class="black--text"
+          >
+            Sign Up
+          </v-btn>
         </p>
       </v-col>
     </v-row>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
