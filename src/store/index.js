@@ -108,6 +108,7 @@ const store = new Vuex.Store({
                   commit('setLoading', false)
                   commit('setError', null)
                   console.log('redirecting')
+                  this.dispatch('getVehicles')
                   router.push('/')
                 })
             })
@@ -118,6 +119,7 @@ const store = new Vuex.Store({
       commit('setUser', null)
       commit('setProfile', null)
       commit('setToken', null)
+      commit('setVehicles', null)
       router.push('/')
     },
     getVehicles ({ commit }) {
@@ -237,8 +239,14 @@ const store = new Vuex.Store({
         return items
       }
     },
+    vehiclesList: state => {
+      var data = state.vehicles
+
+      return data
+    },
     getVehicleToEdit: state => {
-        var data = state.editVehicle
+        var data = []
+        state.editVehicle
 
         if (!("type" in data)) {
           data.type = 0

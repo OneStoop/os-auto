@@ -11,7 +11,7 @@
       </v-col>
     </v-row>
 
-    <v-row no-gutters v-if="this.$store.state.recipe.title === ''">
+    <v-row no-gutters v-if="this.$store.state.vehicles === null">
       <v-col cols="12">
         <v-skeleton-loader
           class="ma-4"
@@ -21,7 +21,9 @@
     </v-row>
 
     <!-- big display -->
-    <v-card >
+    <v-row no-gutters v-if="this.$store.state.vehicles != null">
+    <v-col cols="12">
+    <v-card>
       <v-card-title class="display-1">
         <v-text-field
           v-model="search"
@@ -235,6 +237,8 @@
       </v-data-table>
       </v-card-text>
     </v-card>
+    </v-col>
+    </v-row>
   </v-container>
 </template>
 

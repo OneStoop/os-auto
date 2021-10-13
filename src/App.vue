@@ -62,6 +62,7 @@
       </v-app-bar-nav-icon>
       <v-toolbar-title
         style="width: 350px"
+        v-if="this.$store.getters.isAuthenticated"
       >
         <v-select
           label="Vehicle"
@@ -71,6 +72,7 @@
           class="mt-6"
           :items="this.$store.state.vehicles.vehicles"
           v-model="this.$store.state.activeVehicle"
+          v-if="this.$store.state.vehicles != null"
         ></v-select>
       </v-toolbar-title>
 
@@ -113,6 +115,7 @@
       top
       offset-y
       v-model="fab"
+      v-if="this.$store.getters.isAuthenticated"
     >
       <template v-slot:activator="{ on, attrs }">
           <v-btn

@@ -8,7 +8,7 @@ function loadView(view) {
 const router = new VueRouter({
   mode: 'history',
   routes: [
-    { path: '/', name: 'home', component: loadView('Home'), meta: { requiresAuth: true } },
+    { path: '/', name: 'home', component: loadView('Home')},
     { path: '/inventory', name: 'inventory', component: loadView('Inventory'), meta: { requiresAuth: true } },
     { path: '/inventory/edit', name: 'inventoryEdit', component: loadView('InventoryEdit'), meta: { requiresAuth: true } },
     { path: '/log', name: 'log', component: loadView('Log'), meta: { requiresAuth: true } },
