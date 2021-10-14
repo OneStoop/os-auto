@@ -64,16 +64,74 @@
         style="width: 350px"
         v-if="this.$store.getters.isAuthenticated"
       >
-        <v-select
-          label="Vehicle"
-          solo
-          light
-          dense
-          class="mt-6"
-          :items="this.$store.state.vehicles.vehicles"
-          v-model="this.$store.state.activeVehicle"
-          v-if="this.$store.state.vehicles != null"
-        ></v-select>
+        <v-dialog
+          v-model="selectVehicleDialog"
+          persistent
+          max-width="600"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              light
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ selectVehicleButton }}
+              <v-icon
+                right
+                dark
+                large
+              >
+                mdi-chevron-down
+              </v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="display-1">
+              Vehicles
+              <v-spacer></v-spacer>
+              <v-btn
+                icon
+                color="primary"
+                @click="selectVehicleDialog = false"
+              >
+                <v-icon large>
+                  mdi-close
+                </v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-card-text>
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">
+                        VID
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="item in vm.$store.getters.vehiclesList"
+                      :key="item.vid"
+                    >
+                      <td>{{ item.vid }}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </v-card-text>
+            <v-card-actions>
+            <v-spacer></v-spacer>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="selectVehicleDialog = false"
+              >
+                Cancle
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-toolbar-title>
 
       <v-spacer />
@@ -355,7 +413,10 @@ export default {
       browse: false,
       browseItem: null,
       activeBtn: 1,
-      fab: false
+      fab: false,
+      selectVehicleDialog: false,
+      selectVehicleButton: "Select Vehicle",
+      testList: [{"vid": 1234}]
     }
   },
   computed: {

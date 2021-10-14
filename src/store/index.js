@@ -240,7 +240,13 @@ const store = new Vuex.Store({
       }
     },
     vehiclesList: state => {
-      var data = state.vehicles
+      var data = []
+
+      if (state.vehicles != null) {
+        for (let step = 0; step < state.vehicles.vehicles.length; step++) {
+           data.push(state.vehicles.vehicles[step])
+        }
+      }
 
       return data
     },
