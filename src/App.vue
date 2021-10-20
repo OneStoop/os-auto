@@ -111,7 +111,7 @@
                   </thead>
                   <tbody>
                     <tr
-                      v-for="item in vm.$store.getters.vehiclesList"
+                      v-for="item in vehiclesList"
                       :key="item.vid"
                     >
                       <td>{{ item.vid }}</td>
@@ -420,6 +420,18 @@ export default {
     }
   },
   computed: {
+    vehiclesList: function (val) {
+      console.log("running vehiclesList")
+      var data = []
+
+      if (this.$store.state.vehicles != null) {
+        for (let step = 0; step < this.$store.state.vehicles.vehicles.length; step++) {
+           data.push(this.$store.state.vehicles.vehicles[step])
+        }
+      }
+      console.log(val)
+      return data
+    }
   },
   methods: {
     autoRefreshToken () {
@@ -434,6 +446,10 @@ export default {
     setTimeout(function () { vm.autoRefreshToken() }, 3300000)
   },
   watch: {
+    vehiclesList: function (data) {
+      console.log("running vehiclesList")
+      return data
+    },
   }
 }
 </script>

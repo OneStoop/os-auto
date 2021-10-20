@@ -239,17 +239,6 @@ const store = new Vuex.Store({
         return items
       }
     },
-    vehiclesList: state => {
-      var data = []
-
-      if (state.vehicles != null) {
-        for (let step = 0; step < state.vehicles.vehicles.length; step++) {
-           data.push(state.vehicles.vehicles[step])
-        }
-      }
-
-      return data
-    },
     getVehicleToEdit: state => {
         var data = []
         state.editVehicle
