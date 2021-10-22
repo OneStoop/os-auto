@@ -105,7 +105,7 @@
                   <thead>
                     <tr>
                       <th class="text-left">
-                        VID
+                        Vehicle
                       </th>
                     </tr>
                   </thead>
@@ -113,8 +113,9 @@
                     <tr
                       v-for="item in vehiclesList"
                       :key="item.vid"
+                      @click="handelSelectVehicle(item)"
                     >
-                      <td>{{ item.vid }}</td>
+                      <td>{{ item.mfg + ' ' + item.model }}</td>
                     </tr>
                   </tbody>
                 </template>
@@ -431,25 +432,51 @@ export default {
       }
       console.log(val)
       return data
+    },
+    activeVehicleToWatch : function () {
+      return this.$store.state.activeVehicle
     }
   },
   methods: {
     autoRefreshToken () {
       this.$store.dispatch('refreshToken')
     },
+    handelSelectVehicle (data) {
+      console.log("doing click")
+      this.$store.commit('setActiveVehicle', data)
+      localStorage.activeVehicle = data
+      this.selectVehicleButton = this.$store.state.activeVehicle.mfg + ' ' + this.$store.state.activeVehicle.model
+      this.selectVehicleDialog = false
+    }
   },
   beforeUpdate () {
   },
   mounted () {
-    let vm = this
+    // let vm = this
     // setTimeout(function () { vm.autoRefreshToken() }, 300000)
-    setTimeout(function () { vm.autoRefreshToken() }, 3300000)
+    setTimeout(function () { this.autoRefreshToken() }, 3300000)
+    if (this.$store.state.activeVehicle != localStorage.activeVehicle) {
+      this.$store.commit('setActiveVehicle', localStorage.activeVehicle)
+    }
+
+    if (this.$store.state.activeVehicle != "" && this.$store.state.activeVehicle != null) {
+      this.selectVehicleButton = this.$store.state.activeVehicle.mfg + ' ' + this.$store.state.activeVehicle.model
+    } else {
+      this.selectVehicleButton = "Select Vehicle"
+    }
   },
   watch: {
     vehiclesList: function (data) {
       console.log("running vehiclesList")
       return data
     },
+    activeVehicleToWatch: function () {
+      if (this.$store.state.activeVehicle != "" && this.$store.state.activeVehicle != null) {
+        this.selectVehicleButton = this.$store.state.activeVehicle.mfg + ' ' + this.$store.state.activeVehicle.model
+      } else {
+        this.selectVehicleButton = "Select Vehicle"
+      }
+    }
   }
 }
 </script>

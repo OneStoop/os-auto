@@ -45,7 +45,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              Add New
+              Add Vehicle
             </v-btn>
           </template>
           <v-card>

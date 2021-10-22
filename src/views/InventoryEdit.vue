@@ -140,7 +140,7 @@
                 md="4"
               >
                 <v-text-field
-                  v-model="vehicle.plate"
+                  v-model="vehicle.licensePlate"
                   label="License Plate (optional)"
                 >
                 </v-text-field>
@@ -186,6 +186,47 @@
         >
           Save
         </v-btn>
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="deleteDialog"
+          persistent
+          max-width="400px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              outlined
+              color="red"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Delete Vehicle
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              Are you sure?
+            </v-card-title>
+            <v-card-text>
+              This action can't be undone!
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="deleteDialog = false"
+              >
+                Cancle
+              </v-btn>
+              <v-btn
+                color="red"
+                @click="deleteVehicles"
+              >
+                Delete
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
       </v-card-actions>
       </form>
     </v-card>
@@ -223,6 +264,7 @@ export default {
           to: '/inventory/edit',
         }
       ],
+      deleteDialog: false,
       vehicle: null
     }
   },
@@ -233,6 +275,16 @@ export default {
     clearCloseEdit () {
       this.vehicle = false
       router.push('/inventory')
+    },
+    deleteVehicles () {
+      this.$store.dispatch('deleteVehicles', this.vehicle)
+//      this.selectVehicleButton = "Select Vehicle"
+      if ( this.vehicle.vid == this.$store.state.activeVehicle.vid ) {
+        console.log("updating activeVehicle")
+        localStorage.activeVehicle = null
+        this.$store.commit('setActiveVehicle', null)
+      }
+      this.clearCloseEdit()
     },
     saveEdit () {
       console.log("doing saveEdit")

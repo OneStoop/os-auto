@@ -176,7 +176,8 @@ const store = new Vuex.Store({
       console.log(data)
       axios.post(process.env.VUE_APP_AUTO_API_SERVER + 'vehicles', data, auth)
         .then(response => {
-          commit('setVehicles', response.data)
+          commit('setTmp', response)
+          this.dispatch('getVehicles')
         })
         .catch(function () {
           console.log("there was an error")
@@ -188,6 +189,21 @@ const store = new Vuex.Store({
       }
       console.log(data)
       axios.post(process.env.VUE_APP_AUTO_API_SERVER + 'vehicles/' + data.vid, data, auth)
+        .then(response => {
+          console.log(response)
+          commit('setTmp', null)
+          this.dispatch('getVehicles')
+        })
+        .catch(function () {
+          console.log("there was an error")
+        })
+    },
+    deleteVehicles ({ commit }, data) {
+      var auth = {
+        headers: { 'Content-Type': 'application/json', 'Authorization': store.state.token }
+      }
+      console.log(data)
+      axios.delete(process.env.VUE_APP_AUTO_API_SERVER + 'vehicles/' + data.vid, auth)
         .then(response => {
           console.log(response)
           commit('setTmp', null)
@@ -240,8 +256,7 @@ const store = new Vuex.Store({
       }
     },
     getVehicleToEdit: state => {
-        var data = []
-        state.editVehicle
+        var data = state.editVehicle
 
         if (!("type" in data)) {
           data.type = 0
