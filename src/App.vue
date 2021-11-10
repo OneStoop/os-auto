@@ -205,15 +205,19 @@
                 dark
                 small
                 color="green"
-                to="/fueling"
+                @click="dialogFueling = true"
               >
                 <v-icon>mdi-gas-station</v-icon>
               </v-btn>
             </v-list-item-icon>
-            <v-list-item-title>
-              <router-link :to="'/fueling'" style="text-decoration: none;">
+            <v-list-item-title @click="dialogFueling = true">
+              <v-btn
+                text
+
+                @click="dialogFueling = true"
+              >
                 Fueling
-              </router-link>
+              </v-btn>
             </v-list-item-title>
           </v-list-item>
 
@@ -396,6 +400,97 @@
       </v-row>
     </v-footer>
 
+    <v-dialog
+      v-model="dialogFueling"
+      persistent
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title>
+          Fueling
+        </v-card-title>
+        <v-card-text>
+          <v-form v-model="validFueling">
+            <v-container>
+              <v-row>
+                <v-col
+                  cols="6"
+                  md="4"
+                >
+                  Date
+                </v-col>
+                <v-col
+                  cols="6"
+                  md="4"
+                >
+                  Time
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
+                  cols="12"
+                  md="4"
+                >
+                  Odometer
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
+                  cols="12"
+                  md="4"
+                >
+                  Fuel
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
+                  cols="4"
+                  md="2"
+                >
+                  Price/Gal
+                </v-col>
+                <v-col
+                  cols="4"
+                  md="2"
+                >
+                  Total cost
+                </v-col>
+                <v-col
+                  cols="4"
+                  md="2"
+                >
+                  Gallons
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
+                  cols="12"
+                  md="6"
+                >
+                  Notes
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            @click="dialogFueling = false"
+            color="blue darken-1"
+            text
+          >
+            Cancle
+          </v-btn>
+          <v-btn
+            @click="dialogFueling = false"
+            color="blue darken-1"
+            text
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-app>
 </template>
@@ -417,7 +512,9 @@ export default {
       fab: false,
       selectVehicleDialog: false,
       selectVehicleButton: "Select Vehicle",
-      testList: [{"vid": 1234}]
+      testList: [{"vid": 1234}],
+      dialogFueling: false,
+      validFueling: false
     }
   },
   computed: {
