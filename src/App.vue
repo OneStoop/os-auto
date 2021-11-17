@@ -213,7 +213,7 @@
             <v-list-item-title @click="dialogFueling = true">
               <v-btn
                 text
-
+                outlined
                 @click="dialogFueling = true"
               >
                 Fueling
@@ -222,17 +222,15 @@
           </v-list-item>
 
           <v-list-item>
-            <v-list-item-icon>
-              <v-btn
-                fab
-                dark
-                small
-                color="indigo"
-              >
-                <v-icon>mdi-oil-level</v-icon>
-              </v-btn>
-            </v-list-item-icon>
-            <v-list-item-title>Service</v-list-item-title>
+            <v-chip
+              class="ma-2"
+              color="primary"
+              text-color="white"
+              label
+            >
+              <v-icon left>mdi-oil-level</v-icon>
+              Service
+            </v-chip>
           </v-list-item>
 
           <v-list-item>
@@ -415,13 +413,11 @@
               <v-row>
                 <v-col
                   cols="6"
-                  md="4"
                 >
                   Date
                 </v-col>
                 <v-col
                   cols="6"
-                  md="4"
                 >
                   Time
                 </v-col>
@@ -429,45 +425,61 @@
               <v-row>
                 <v-col
                   cols="12"
-                  md="4"
                 >
-                  Odometer
+                <v-text-field
+                    v-model="fuelingOdometer"
+                    label="Odometer"
+                    hint="Some hint"
+                    persistent-hint
+                  ></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col
                   cols="12"
-                  md="4"
                 >
-                  Fuel
+                  <v-select
+                    :items="fuelingFuelItems"
+                    v-model="fuelingFuel"
+                    label="Fuel"
+                  ></v-select>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col
                   cols="4"
-                  md="2"
                 >
-                  Price/Gal
+                  <v-text-field
+                    v-model="fuelingPPG"
+                    label="Price/Gal"
+                  ></v-text-field>
                 </v-col>
                 <v-col
                   cols="4"
-                  md="2"
                 >
-                  Total cost
+                  <v-text-field
+                    v-model="fuelingVol"
+                    label="Gallons"
+                  ></v-text-field>
                 </v-col>
                 <v-col
                   cols="4"
-                  md="2"
                 >
-                  Gallons
+                 <v-text-field
+                    v-model="fuelingTotal"
+                    label="Total Cost"
+                  ></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col
                   cols="12"
-                  md="6"
                 >
-                  Notes
+                  <v-textarea
+                    auto-grow
+                    label="Notes"
+                    v-model="fuelingNotes"
+                  ></v-textarea>
                 </v-col>
               </v-row>
             </v-container>
@@ -475,7 +487,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn
-            @click="dialogFueling = false"
+            @click="fuelingCancel"
             color="blue darken-1"
             text
           >
@@ -514,7 +526,14 @@ export default {
       selectVehicleButton: "Select Vehicle",
       testList: [{"vid": 1234}],
       dialogFueling: false,
-      validFueling: false
+      validFueling: false,
+      fuelingNotes: null,
+      fuelingPPG: null,
+      fuelingVol: null,
+      fuelingTotal: null,
+      fuelingFuel: null,
+      fuelingFuelItems: ["Gasoline", "Gas Midgrade", "Gas Premium", "Diesel"],
+      fuelingOdometer: null
     }
   },
   computed: {
@@ -544,6 +563,15 @@ export default {
       localStorage.activeVehicle = data
       this.selectVehicleButton = this.$store.state.activeVehicle.mfg + ' ' + this.$store.state.activeVehicle.model
       this.selectVehicleDialog = false
+    },
+    fuelingCancel () {
+      this.fuelingNotes = null
+      this.fuelingPPG = null
+      this.fuelingVol = null
+      this.fuelingTotal = null
+      this.fuelingFuel = null
+      this.fuelingOdometer = null
+      this.dialogFueling = false
     }
   },
   beforeUpdate () {
@@ -572,6 +600,21 @@ export default {
         this.selectVehicleButton = this.$store.state.activeVehicle.mfg + ' ' + this.$store.state.activeVehicle.model
       } else {
         this.selectVehicleButton = "Select Vehicle"
+      }
+    },
+    fuelingPPG: function () {
+      if (this.fuelingVol != null) {
+        this.fuelingTotal = Math.round((this.fuelingVol * this.fuelingPPG) * 100) / 100
+      }
+    },
+    fuelingVol: function () {
+      if (this.fuelingPPG != null) {
+        this.fuelingTotal = Math.round((this.fuelingVol * this.fuelingPPG) * 100) / 100
+      }
+    },
+    fuelingTotal: function () {
+      if (this.fuelingPPG != null) {
+        this.fuelingVol = Math.round((this.fuelingTotal / this.fuelingPPG) * 100) / 100
       }
     }
   }
