@@ -429,7 +429,7 @@
                 <v-text-field
                     v-model="fuelingOdometer"
                     label="Odometer"
-                    hint="Some hint"
+                    :hint="lastOdometer"
                     persistent-hint
                   ></v-text-field>
                 </v-col>
@@ -549,8 +549,11 @@ export default {
       console.log(val)
       return data
     },
-    activeVehicleToWatch : function () {
+    activeVehicleToWatch: function () {
       return this.$store.state.activeVehicle
+    },
+    lastOdometer: function () {
+      return "Last Odometer " + this.$store.state.activeVehicle.lastOdometer
     }
   },
   methods: {
